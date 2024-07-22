@@ -4,6 +4,7 @@
   *******************************************************************************
   */
 #include <stdbool.h>
+#include <stddef.h>
 #include "mdb.h"
 
 /**
@@ -42,7 +43,7 @@ typedef struct
   * Static Variables
   *******************************************************************************
   */
-static mdb_t mdb_struct;
+static mdb_t mdb_dev = { .MdbQueueCmdPushCB = NULL };
 static mdb_vend_t mdb_vend_struct = { .is_start = false };
 
 /**
@@ -62,9 +63,9 @@ static mdb_vend_t mdb_vend_struct = { .is_start = false };
   * @param  None
   * @retval None
   */
-void MdbInit(mdb_t mdb_dev)
+void MdbInit(mdb_t mdb_struct)
 {
-    mdb_struct.MdbQueueCmdPushCB = mdb_dev.MdbQueueCmdPushCB;
+    mdb_dev.MdbQueueCmdPushCB = mdb_struct.MdbQueueCmdPushCB;
 }
 
 /**
@@ -85,7 +86,10 @@ void MdbVendStart(int item, int price)
     mdb_vend_struct.item     = item;
     mdb_vend_struct.price    = price;
 
-    mdb_dev.MdbQueueCmdPushCB((mdb_cmd_t*)mdb_cmd_struct);
+    if (mdb_dev.MdbQueueCmdPushCB != NULL)
+    {
+        mdb_dev.MdbQueueCmdPushCB(mdb_cmd_struct);
+    }
 }
 
 /**
@@ -117,6 +121,10 @@ void MdbVendFinish(bool is_vend_success)
         return;
     }
 
-    mdb_dev.MdbQueueCmdPushCB((mdb_cmd_t*)mdb_cmd_struct);
+    if (mdb_dev.MdbQueueCmdPushCB != NULL)
+    {
+        mdb_dev.MdbQueueCmdPushCB(mdb_cmd_struct);
+    }
+
     mdb_vend_struct.is_start = false;
 }

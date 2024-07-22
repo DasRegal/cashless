@@ -1,6 +1,7 @@
 #ifndef MDB_H
 #define MDB_H
 
+#include <stdint.h>
 /** 
   * @brief  CASHLESS return values
   */
@@ -32,10 +33,10 @@ typedef struct
 
 typedef struct
 {
-    void (*MdbQueueCmdPushCB)(*void);
+    void (*MdbQueueCmdPushCB)(mdb_cmd_t mdb_cmd_struct);
 } mdb_t;
 
-void MdbInit(mdb_t mdb_dev);
+void MdbInit(mdb_t mdb_struct);
 void MdbVendStart(int item, int price);
 int MdbVendCheck(void);
 void MdbVendFinish(bool is_vend_success);
