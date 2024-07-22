@@ -1,0 +1,21 @@
+source("src/mdb.c")
+{
+    #include "../src/mdb.h"
+
+    QueueCmdPushCB()
+    {
+        
+    }
+
+    {
+        mdb_t mdb_struct;
+
+        mdb_struct.MdbQueueCmdPushCB = QueueCmdPushCB;
+        MdbInit(mdb_struct);
+
+        it("")
+        {
+
+        }
+    }
+}

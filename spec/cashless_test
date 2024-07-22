@@ -1,0 +1,83 @@
+source("src/cashless.c")
+{
+    #include "../src/cashless.h"
+    {
+        int ret_val;
+        const int ret_ok = 0;
+        const int item = 0;
+        const int price = 100;
+
+        before_each
+        {
+            /* Initialize Cashless module */
+            CashlessInit();
+        }
+
+        describe("Start Vend")
+        {
+
+            it("must return the correct value in first time")
+            {
+                ret_val = CashlessMakePurchase(item, price);
+                ret_val to_eq(ret_ok);
+            }
+
+            it("must return the incorrect value after first make purchase without handling")
+            {
+                /* First start */
+                CashlessMakePurchase(item, price);
+                /* Second start */
+                ret_val = CashlessMakePurchase(item, price);
+                ret_val not_to_eq(ret_ok);
+            }
+
+            it("must return the correct value after handling")
+            {
+                /* First start */
+                CashlessMakePurchase(item, price);
+                /* Handling */
+                CashlessCheckPurchase();
+                /* Second time */
+                ret_val = CashlessMakePurchase(item, price);
+                ret_val to_eq(ret_ok);
+            }
+        }
+
+        describe("Check Vend")
+        {
+            it("must be incorrect check without start Vend")
+            {
+                ret_val = CashlessCheckPurchase();
+                ret_val not_to_eq(ret_ok);
+            }
+
+            it("must be correct check after start Vend")
+            {
+                CashlessMakePurchase(item, price);
+
+                ret_val = CashlessCheckPurchase();
+                ret_val to_eq(ret_ok);
+            }
+        }
+
+        describe("Finish Vend")
+        {
+            it("must be incorrect value without Check Vend")
+            {
+                CashlessMakePurchase(item, price);
+
+                ret_val = CashlessFinishPurchase(true);
+                ret_val not_to_eq(ret_ok);
+            }
+
+            it("must be correct value after Chech Vend")
+            {
+                CashlessMakePurchase(item, price);
+                CashlessCheckPurchase();
+
+                ret_val = CashlessFinishPurchase(true);
+                ret_val to_eq(ret_ok);
+            }
+        }
+    }
+}
