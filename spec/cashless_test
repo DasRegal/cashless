@@ -1,7 +1,7 @@
 source("src/cashless.c")
 source("src/mdb.c")
+#include "../src/mdb.h"
 {
-    #include "../src/mdb.h"
     #include "../src/cashless.h"
     {
         int ret_val;

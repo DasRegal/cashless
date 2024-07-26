@@ -15,15 +15,29 @@ typedef enum
 
 typedef enum
 {
+    MDB_RESET_CMD_E     = 0,
+    MDB_SETUP_CMD_E     = 1,
     MDB_VEND_CMD_E      = 3,
+    MDB_READER_CMD_E    = 4,
 } mdb_code_cmd_t;
 
 typedef enum
 {
-    MDB_VEND_REQ_SUBCMD     = 0,
-    MDB_VEND_SUCCESS_SUBCMD = 2,
-    MDB_VEND_FAILURE_SUBCMD = 3,
+    MDB_VEND_REQ_SUBCMD_E     = 0,
+    MDB_VEND_SUCCESS_SUBCMD_E = 2,
+    MDB_VEND_FAILURE_SUBCMD_E = 3,
 } mdb_vend_subcmd_t;
+
+typedef enum
+{
+    MDB_SETUP_CONFIG_SUBCMD_E = 0,
+    MDB_SETUP_PRICE_SUBCMD_E  = 1,
+} mdb_setup_subcmd_t;
+
+typedef enum
+{
+    MDB_READER_ENABLE_SUBCMD_E = 1,
+} mdb_reader_subcmd_t;
 
 typedef struct
 {
