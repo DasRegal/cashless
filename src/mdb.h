@@ -48,6 +48,7 @@ typedef struct
 typedef struct
 {
     void (*MdbQueueCmdPushCB)(mdb_cmd_t mdb_cmd_struct);
+    void (*MdbQueueCmdPullCB)(mdb_cmd_t mdb_cmd_struct);
 } mdb_t;
 
 void MdbInit(mdb_t mdb_struct);

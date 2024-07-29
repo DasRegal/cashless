@@ -43,7 +43,11 @@ typedef struct
   * Static Variables
   *******************************************************************************
   */
-static mdb_t mdb_dev = { .MdbQueueCmdPushCB = NULL };
+static mdb_t mdb_dev = {
+    .MdbQueueCmdPushCB = NULL,
+    .MdbQueueCmdPullCB = NULL,
+};
+
 static mdb_vend_t mdb_vend_struct = { .is_start = false };
 
 /**
@@ -67,6 +71,7 @@ static void MdbReset(void);
 void MdbInit(mdb_t mdb_struct)
 {
     mdb_dev.MdbQueueCmdPushCB = mdb_struct.MdbQueueCmdPushCB;
+    mdb_dev.MdbQueueCmdPullCB = mdb_struct.MdbQueueCmdPullCB;
     MdbReset();
 }
 
@@ -166,6 +171,11 @@ void MdbVendFinish(bool is_vend_success)
     mdb_vend_struct.is_start = false;
 }
 
+/**
+  * @brief  Send Command
+  * @param  None
+  * @retval None
+  */
 void MdbSendCmd(void)
 {
     
