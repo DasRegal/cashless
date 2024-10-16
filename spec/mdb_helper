@@ -1,0 +1,72 @@
+#define TEST_MAX_MDB_CMD    7
+#define TEST_VMC_LEVEL      2
+
+mdb_cmd_t mdb_cmd_struct[TEST_MAX_MDB_CMD];
+uint8_t idx = 0;
+uint16_t buf[MDB_MAX_BUF_LEN];
+    
+void QueueCmdPushCB(mdb_cmd_t cmd_struct)
+{
+    if (idx == TEST_MAX_MDB_CMD)
+    {
+        assert("Queue overflow");
+        exit(1);
+    }
+    mdb_cmd_struct[idx].cmd    = cmd_struct.cmd;
+    mdb_cmd_struct[idx].subcmd = cmd_struct.subcmd;
+    idx++;
+}
+
+mdb_cmd_t QueueCmdPullCB(void)
+{
+    mdb_cmd_t cmd_struct;
+    cmd_struct = mdb_cmd_struct[0];
+
+    if (idx == 0)
+    {
+        cmd_struct.cmd = MDB_EMPTY_CMD_E;
+        return cmd_struct;
+    }
+
+    if (idx == 1)
+    {
+        idx--;
+        return cmd_struct;
+    }
+    idx--;
+
+    for (uint8_t i = 0; i < idx; i++)
+    {
+        mdb_cmd_struct[i].cmd    = mdb_cmd_struct[i + 1].cmd;
+        mdb_cmd_struct[i].subcmd = mdb_cmd_struct[i + 1].subcmd;
+    }
+
+    return cmd_struct;
+}
+
+void TxBufCB(const uint16_t * pBuf, uint8_t len)
+{
+    printf("[tx]->: ");
+    for(int i = 0; i < len; i++)
+    {
+        printf("0x%03X ", pBuf[i]);
+    }
+    printf("\n");
+}
+
+void WrapMdbPollReceive(uint16_t ch)
+{
+    printf("0x%03X ", ch);
+    if (ch & 0x100)
+        printf("\n");
+
+    MdbPollReceive(ch);
+}
+
+void ReconfigCB(void* p_data)
+{
+    mdb_t* p_mdb_dev = (mdb_t*)p_data;
+    printf("Reconfig:\n");
+    printf("\tresp time = %d\n", p_mdb_dev->conf.max_resp_time);
+    printf("\tcashless level = %d\n", p_mdb_dev->conf.cashless_level);
+}

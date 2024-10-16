@@ -1,17 +1,86 @@
-source("src/mdb.c")
-{
-    #include "../src/mdb.h"
+source("src/mdb.c");
 
-    void QueueCmdPushCB(mdb_cmd_t mdb_cmd_struct)
+#include "../src/mdb.h"
+#include "mdb_helper"
+{
+    before_each
     {
+        static uint8_t serial_number[29] = "ABCSBCA0022    RVM-28-4    10";
+
+        mdb_t mdb_struct;
+        mdb_struct.MdbQueueCmdPushCB = QueueCmdPushCB;
+        mdb_struct.MdbQueueCmdPullCB = QueueCmdPullCB;
+        mdb_struct.MdbTxBufCB        = TxBufCB;
+        mdb_struct.MdbReconfigCB     = ReconfigCB;
+        mdb_struct.p_info            = serial_number;
+        mdb_struct.vmc_level         = TEST_VMC_LEVEL;
+
+        idx = 0;
+        MdbInit(mdb_struct);
     }
 
+    describe("Initialization")
     {
-        before_each
+        it("must be correct VMC level")
         {
-            mdb_t mdb_struct;
-            mdb_struct.MdbQueueCmdPushCB = QueueCmdPushCB;
-            MdbInit(mdb_struct);
+            TEST_VMC_LEVEL less_then(3);
+        }
+
+        it("asdasd")
+        {
+            /* Reset and Initialising for 2 level Cashless */
+
+            static uint8_t periph_sn[29] = "XYZSN0123456789MODEL123456712";
+
+            /* RESET */
+            MdbPollSend();
+            WrapMdbPollReceive(0x100);
+
+            /* POLL */
+            MdbPollSend();
+            WrapMdbPollReceive(0x00);
+            WrapMdbPollReceive(0x100);
+            MdbPollSend();
+
+            /* SETUP */
+            MdbPollSend();
+            WrapMdbPollReceive(0x01); /* Reader config data Header. */
+            WrapMdbPollReceive(0x02); /* Reader Feature Level. */
+            WrapMdbPollReceive(0x02); /* Country / Currency Code. */
+            WrapMdbPollReceive(0x83); /* 0x0283 - 643 (dec) - RUB. */
+            WrapMdbPollReceive(0x01); /* Scale Factor.*/
+            WrapMdbPollReceive(0x01); /* Decimal Places. */
+            WrapMdbPollReceive(0x05); /* Application Maximum Response Time (sec)*/
+            WrapMdbPollReceive(0x00); /* Miscellaneous Options */
+            WrapMdbPollReceive(0x18F);
+            MdbPollSend();
+
+            /* SETUP */
+            MdbPollSend();
+            WrapMdbPollReceive(0x100);
+
+            /* EXPANSION REQUEST ID */
+            MdbPollSend();
+            WrapMdbPollReceive(0x100);
+
+            /* POLL */
+            MdbPollSend();
+
+            WrapMdbPollReceive(0x09);
+            for (int i = 0; i < 29; i++)
+                WrapMdbPollReceive(periph_sn[i]);
+            WrapMdbPollReceive(0x102);
+            MdbPollSend();
+
+             /* READER ENABLE */
+            MdbPollSend();
+            WrapMdbPollReceive(0x100);
+
+            MdbPollSend(); WrapMdbPollReceive(0x100);
+            MdbPollSend(); WrapMdbPollReceive(0x100);
+            MdbPollSend(); WrapMdbPollReceive(0x100);
+            MdbPollSend(); WrapMdbPollReceive(0x100);
         }
     }
 }
+
