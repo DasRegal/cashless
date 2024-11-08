@@ -79,9 +79,22 @@ static void CashlessReleasePurchase(void);
   * @param  None
   * @retval None
   */
+// extern void QueueCmdPushCB(mdb_cmd_t cmd_struct);
 void CashlessInit(void)
 {
     cashless_struct.is_hold_purchase = false;
+
+    // static uint8_t serial_number[29] = "ABCSBCA0022    RVM-28-4    10";
+
+    mdb_t mdb_struct;
+    mdb_struct.MdbQueueCmdPushCB = QueueCmdPushCB;
+    // mdb_struct.MdbQueueCmdPullCB = QueueCmdPullCB;
+    // mdb_struct.MdbTxBufCB        = TxBufCB;
+    // mdb_struct.MdbReconfigCB     = ReconfigCB;
+    // mdb_struct.p_info            = serial_number;
+    // mdb_struct.vmc_level         = TEST_VMC_LEVEL;
+
+    MdbInit(mdb_struct);
 }
 
 /**

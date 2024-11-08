@@ -267,7 +267,6 @@ void MdbPollSend(void)
         mdb_cmd_struct = mdb_dev.MdbQueueCmdPullCB();
     }
 
-
     if ( mdb_cmd_struct.cmd == MDB_EMPTY_CMD_E)
     {
         mdb_cmd_struct.cmd = MDB_POLL_CMD_E;

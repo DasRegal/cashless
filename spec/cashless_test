@@ -1,8 +1,14 @@
 source("src/cashless.c")
 source("src/mdb.c")
 #include "../src/mdb.h"
+#include "mdb_helper"
 {
     #include "../src/cashless.h"
+    // void QueueCmdPushCB(mdb_cmd_t cmd_struct)
+    // {
+    
+    // }
+
     {
         int ret_val;
         const int ret_ok = 0;
